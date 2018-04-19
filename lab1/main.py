@@ -4,7 +4,9 @@ import scipy
 import numpy as np
 import matplotlib.pyplot as plt
 
+from tqdm import tqdm
 from sklearn import preprocessing
+from laplotter import LossAccPlotter
 
 ds_loc="../dataset/cifar-10-batches-py/"
 plot_loc="./plots/"
@@ -84,9 +86,9 @@ def plotImages(dataset, name):
 cifar=CIFAR()
 labels=cifar.labels
 
-train=cifar.get_batches("data_batch_1")
-val=cifar.get_batches("data_batch_1")
-test=cifar.get_batches("test_batch")
+train = cifar.get_batches('data_batch_1', 'data_batch_2', 'data_batch_3', 'data_batch_4') #
+val = cifar.get_batches('data_batch_5')
+test = cifar.get_batches("test_batch")
 
 # Plot label distribution
 barPlotLabels(train, labels, "barLabels")
@@ -101,35 +103,37 @@ class Net():
         self.out_size = output_size
         # Guassian normal dist as sensible random initialization
         # Weights
-        self.W = np.random.normal(loc=0.5, scale=0.1, size=(output_size, input_size))
+        self.W = np.random.normal(loc=0.0, scale=0.01, size=(output_size, input_size))
         # Bias
-        self.b = np.random.normal(loc=0.5, scale=0.1, size=(output_size, 1))
+        self.b = np.random.normal(loc=0.0, scale=0.01, size=(output_size, 1))
         # Lambda term
         self.lam = lam
 
     def softmax(self, x):
         try:
-            e = np.exp(x)
+            # this should prevent error tried for
+            e = np.exp(x - x.max())
             return e / np.sum(e, axis=0)
         except FloatingPointError:
-            # Gradient explosion scenario TODO
+            # Gradient explosion scenario
+            print("jesus take the wheel")
             return np.ones(x)
 
-    def evaluate(self, X):
+    def evaluate(self, x):
         """
-        X: input of size [in_size, N]
+        x: input of size [in_size, N]
             returns:
         prob: probabilities of each class [out_size, N]
         pred: integer value of the most probable class: [1, N]
         """
-        X = np.reshape(X, (self.in_size, -1))
-        prob = self.softmax(np.dot(self.W, X) + self.b)
+        x = np.reshape(x, (self.in_size, -1))
+        prob = self.softmax(np.dot(self.W, x) + self.b)
         pred = np.argmax(prob, axis=0)
         return prob, pred
 
     def cost(self, prob, truth):
         """
-        prob: probablities of each class [out_size, N]
+        prob: probabilities of each class [out_size, N]
         (ground) truth: one hot encodings, one per image [out_size, N]
             returns:
         cost: cross entropy plus L2 regularization term to minimize
@@ -142,14 +146,170 @@ class Net():
         Py = np.multiply(truth, prob).sum(axis=0)
         Py[Py == 0] = np.finfo(float).eps # fix floats
 
-        return - np.log(Py).sum() / N * self.lam * np.power(self.W, 2).sum()
+        return - np.log(Py).sum() / N + self.lam * np.power(self.W, 2).sum()
+
+    def accuracy(self, pred, truth):
+        """
+        prob: probabilities of each class [out_size, N]
+        (ground) truth: one hot encodings, one per image [out_size, N]
+                    returns
+            returns:
+        percentage of correct predictions given the (ground) truth
+        """
+        N = pred.shape[0]
+        truth = np.argmax(truth, axis=0)
+        return np.sum(pred == truth) / N
+
+    def slides_gradient(self, x, prob, truth):
+        N = prob.shape[1]
+
+        gW = np.zeros(self.W.shape)
+        gB = np.zeros(self.b.shape)
+
+        for i in range(N):
+            p = prob[:,i]
+            t = truth[:,i]
+
+            # Jacobian according for formulas in Ass1
+            a = np.outer(p,p)
+            b = np.dot(t, (np.diag(p) - a))
+            c = np.dot(t, p)
+            g = -b/c
+
+            gW += np.outer(g, x[:,i])
+            gB += np.reshape(g, gB.shape)
+
+        # here's the difference in (10) and (11)
+        gW = (1.0/N) * gW + 2 * self.lam * self.W
+        gB /= N
+
+        return gW, gB
+
+def num_gradient(x, truth, net, h=1e-6):
+    Ws = net.W.shape
+    Bs = net.b.shape
+
+    gW = np.zeros(net.W.shape)
+    gB = np.zeros(net.b.shape)
+
+    p, _ = net.evaluate(x)
+    c = net.cost(p, truth)
+
+    # we dont make a temps, we subtract h later
+    for i in tqdm(range(Bs[0]), ncols=50):
+        net.b[i] += h
+        p, _ = net.evaluate(x)
+        next_c = net.cost(p, truth)
+        gB[i] = (next_c - c) / h
+        net.b[i] -= h
+
+    for i in tqdm(range(Ws[0]), ncols=50):
+        for j in range(Ws[1]):
+            net.W[i, j] += h
+            p, _ = net.evaluate(x)
+            next_c = net.cost(p, truth)
+            gW[i, j] = (next_c - c) / h
+            net.W[i, j] -= h
+
+    return gW, gB
+
+def compareGradients(actualW, actualB, numericW, numericB):
+    """
+    computes the relative error between the 'actual' gradient and a controlled
+    numerical one, where the goal is to achieve a very small positive difference.
+    """
+    rel_err_W = np.abs(np.subtract(actualW, numericW)).sum()
+    rel_err_B = np.abs(np.subtract(actualB, numericB)).sum()
+    print('Gradient relative error check:')
+    print('Relative error W: {:.6e}'.format(rel_err_W))
+    print('Relative error B: {:.6e}'.format(rel_err_B))
+
+def trainMiniBatch(train, val, net, eta=0.01, epochs=20, batch_size=100, shuffle=False):
+    N = train['images'].shape[0]
+    ind = np.arange(N)
+
+    a_train, c_train, a_val, c_val = [], [], [], []
+    trainImgT = train['images'].T
+    trainTruthT = train['one_hot'].T
+    valImgT = val['images'].T
+    valTruthT = val['one_hot'].T
+
+    for e in tqdm(range(epochs), ncols=50):
+        if shuffle:
+            np.random.shuffle(ind)
+
+        for i in range(0, N, batch_size):
+            batch_ind = ind[i: i + batch_size]
+            x = train['images'][batch_ind].T
+            truth = train['one_hot'][batch_ind].T
+
+            # do the learning
+            prob, pred = net.evaluate(x)
+            gW, gB = net.slides_gradient(x, prob, truth)
+            net.W -= eta * gW
+            net.b -= eta * gB
+
+        # Measure each epoch
+        prob, pred = net.evaluate(trainImgT)
+        c_train.append(net.cost(prob, trainTruthT))
+        a_train.append(net.accuracy(pred, trainTruthT))
+
+        prob, pred = net.evaluate(valImgT)
+        c_val.append(net.cost(prob, valTruthT))
+        a_val.append(net.accuracy(pred, valTruthT))
+
+    return np.array(a_train), np.array(c_train), np.array(a_val), np.array(c_val)
 
 
 net = Net(cifar.in_size, cifar.out_size)
-num_examples = 3
-in_data = train['images'][0:num_examples]
-ground_truth = train['one_hot'][0:num_examples]
-probabilities, predictions = net.evaluate(in_data)
+num_examples = 100
+in_data = train['images'][0:num_examples].T
+truth = train['one_hot'][0:num_examples].T
+prob, pred = net.evaluate(in_data)
+print('Initial Accuracy: {:.2e}'.format(net.accuracy(pred, truth)))
 
-print(probabilities)
-print(predictions)
+# Time to compare gradients
+numericW, numericB = num_gradient(in_data, truth, net)
+slidesW, slidesB = net.slides_gradient(in_data, prob, truth)
+compareGradients(slidesW, slidesB, numericW, numericB)
+
+# Time to train the network
+a_train, c_train, a_val, c_val = trainMiniBatch(train, val, net)
+
+def plotResults(title, a_train, c_train, a_val, c_val):
+    plotter = LossAccPlotter(title=title,
+        show_averages=False,
+        save_to_filepath= plot_loc + "lossAcc_{}.png".format(title),
+        show_plot_window=show_not_save)
+
+    for e in range(len(a_train)):
+        plotter.add_values(e, loss_train=c_train[e], acc_train=a_train[e], loss_val=c_val[e], acc_val=a_val[e], redraw=False)
+
+    plotter.redraw()
+    plotter.block()
+
+plotResults("Initial", a_train, c_train, a_val, c_val)
+
+def weights_plot(net, dest_file, labels):
+    for i, row in enumerate(net.W):
+        img = (row - row.min()) / (row.max() - row.min())
+        plt.subplot(2, 5, i+1)
+        show_image(img, label=labels[i])
+    if not show_not_save:
+        plt.savefig(dest_file)
+    plt.clf()
+    plt.close()
+    return dest_file
+
+weights_plot(net, plot_loc + "weights_vizualisation_Initial.png", labels)
+
+def tryParameters(test_name, lam, epochs, batch_size, eta):
+    net = Net(cifar.in_size, cifar.out_size, lam)
+    a_train, c_train, a_val, c_val = trainMiniBatch(train, val, net, eta, epochs, batch_size)
+    plotResults(test_name, a_train, c_train, a_val, c_val)
+    weights_plot(net, "plots/weights_vizualisation_{}.png".format(test_name), labels)
+
+tryParameters("ParamTest1", 0, 40, 100, .1)
+tryParameters("ParamTest2", 0, 40, 100, .01)
+tryParameters("ParamTest3", .1, 40, 100, .01)
+tryParameters("ParamTest4", 1, 40, 100, .01)
