@@ -82,20 +82,6 @@ def plotImages(dataset, name):
     plt.suptitle('Sample images from ' + name, fontsize=20)
     show_save(name)
 
-# Exercise 1
-cifar=CIFAR()
-labels=cifar.labels
-
-train = cifar.get_batches('data_batch_1', 'data_batch_2', 'data_batch_3', 'data_batch_4') #
-val = cifar.get_batches('data_batch_5')
-test = cifar.get_batches("test_batch")
-
-# Plot label distribution
-barPlotLabels(train, labels, "barLabels")
-plotImages(train, "Training set")
-plotImages(val, "Validation set")
-plotImages(test, "Test set")
-
 # Time to make a network
 class Net():
     def __init__(self, input_size, output_size, lam=0.1):
@@ -261,21 +247,6 @@ def trainMiniBatch(train, val, net, eta=0.01, epochs=20, batch_size=100, shuffle
     return np.array(a_train), np.array(c_train), np.array(a_val), np.array(c_val)
 
 
-net = Net(cifar.in_size, cifar.out_size)
-num_examples = 100
-in_data = train['images'][0:num_examples].T
-truth = train['one_hot'][0:num_examples].T
-prob, pred = net.evaluate(in_data)
-print('Initial Accuracy: {:.2e}'.format(net.accuracy(pred, truth)))
-
-# Time to compare gradients
-numericW, numericB = num_gradient(in_data, truth, net)
-slidesW, slidesB = net.slides_gradient(in_data, prob, truth)
-compareGradients(slidesW, slidesB, numericW, numericB)
-
-# Time to train the network
-a_train, c_train, a_val, c_val = trainMiniBatch(train, val, net)
-
 def plotResults(title, a_train, c_train, a_val, c_val):
     plotter = LossAccPlotter(title=title,
         show_averages=False,
@@ -288,8 +259,6 @@ def plotResults(title, a_train, c_train, a_val, c_val):
     plotter.redraw()
     plotter.block()
 
-plotResults("Initial", a_train, c_train, a_val, c_val)
-
 def weights_plot(net, dest_file, labels):
     for i, row in enumerate(net.W):
         img = (row - row.min()) / (row.max() - row.min())
@@ -301,13 +270,53 @@ def weights_plot(net, dest_file, labels):
     plt.close()
     return dest_file
 
-weights_plot(net, plot_loc + "weights_vizualisation_Initial.png", labels)
-
 def tryParameters(test_name, lam, epochs, batch_size, eta):
     net = Net(cifar.in_size, cifar.out_size, lam)
     a_train, c_train, a_val, c_val = trainMiniBatch(train, val, net, eta, epochs, batch_size)
+    prob, pred = net.evaluate(test['images'].T)
+    print('{} Test Accuracy: {:.2f}'.format(test_name, net.accuracy(pred, test['one_hot'].T)))
     plotResults(test_name, a_train, c_train, a_val, c_val)
     weights_plot(net, "plots/weights_vizualisation_{}.png".format(test_name), labels)
+
+
+# Exercise 1
+cifar=CIFAR()
+labels=cifar.labels
+
+train = cifar.get_batches('data_batch_1')
+val = cifar.get_batches('data_batch_2')
+test = cifar.get_batches("test_batch")
+
+# Plot label distribution
+barPlotLabels(train, labels, "barLabels")
+plotImages(train, "Training set")
+plotImages(val, "Validation set")
+plotImages(test, "Test set")
+
+# Create the network and test the accuracy before training
+net = Net(cifar.in_size, cifar.out_size)
+num_examples = 100
+in_data = train['images'][0:num_examples].T
+truth = train['one_hot'][0:num_examples].T
+prob, pred = net.evaluate(in_data)
+print('Initial Accuracy: {:.2f}'.format(net.accuracy(pred, truth)))
+
+# Compare gradients
+numericW, numericB = num_gradient(in_data, truth, net)
+slidesW, slidesB = net.slides_gradient(in_data, prob, truth)
+compareGradients(slidesW, slidesB, numericW, numericB)
+
+# Train the network
+a_train, c_train, a_val, c_val = trainMiniBatch(train, val, net)
+
+plotResults("Initial", a_train, c_train, a_val, c_val)
+
+weights_plot(net, plot_loc + "weights_vizualisation_Initial.png", labels)
+
+# Parameter testing, using the greater train set
+train = cifar.get_batches('data_batch_1', 'data_batch_2', 'data_batch_3', 'data_batch_4') #
+val = cifar.get_batches('data_batch_5')
+truth = train['one_hot'].T
 
 tryParameters("ParamTest1", 0, 40, 100, .1)
 tryParameters("ParamTest2", 0, 40, 100, .01)

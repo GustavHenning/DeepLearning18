@@ -2,6 +2,8 @@
 accuracy of models trained with machine learning methods.
 
 !!!!!!!!!!!!!!!!!!!!! original author: https://github.com/JamesLuoau/LossAccPlotter
+Didn't want to include this in my file as it is not my doing
+!!!!!!!!!!!!!!!!!!!!!
 
 Example:
     plotter = LossAccPlotter()
