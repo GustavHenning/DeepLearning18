@@ -13,7 +13,11 @@ class Layer():
             # Bias
             self.b = np.random.normal(loc=0.0, scale=0.01, size=(out_size, 1))
             # Weight regularization
-            self.lam = lam;
+            self.lam = lam
+            self.mom = {
+                'W' : np.zeros(self.W.shape),
+                'b' : np.zeros(self.b.shape)
+            }
 
             self.resetGrad()
         # this is a memory variable between forward/backward
@@ -24,13 +28,13 @@ class Layer():
         assert x is not None
         # sometimes we need to store input for backward
         self.x = x
-        print(self.name + " forward")
-        print(self.x.shape)
+        #print(self.name + " forward")
+        #print(self.x.shape)
 
     def backward(self):
         assert self.x is not None
-        print(self.name + " back")
-        print(self.x.shape)
+        #print(self.name + " back")
+        #print(self.x.shape)
 
     def cost(self):
         return 0
@@ -40,7 +44,10 @@ class Layer():
         self.gB = np.zeros(self.b.shape)
 
     # for non-activation layers to implement
-    def update(l_rate=0.001):
+    def update(self, l_rate=0.001):
+        pass
+
+    def updateMom(self, l_rate=0.001, momentum=0.0):
         pass
 
 class Linear(Layer):
@@ -74,9 +81,16 @@ class Linear(Layer):
     def cost(self):
         return self.lam * np.power(self.W, 2).sum()
 
-    def update(l_rate=0.001):
-        self.W -= l_rate * gW
-        self.b -= l_rate * gB
+    def update(self, l_rate=0.001):
+        self.W -= l_rate * self.gW
+        self.b -= l_rate * self.gB
+
+    def updateMom(self, l_rate=0.001, momentum=0.0):
+        self.mom['W'] = momentum * self.mom['W'] + l_rate * self.gW
+        self.mom['b'] = momentum * self.mom['b'] + l_rate * self.gB
+
+        self.W -= self.mom['W']
+        self.b -= self.mom['b']
 
 class ReLU(Layer):
     def __init__(self, in_size, name="relu"):

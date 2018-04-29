@@ -126,43 +126,6 @@ def compareGradients(actualW, actualB, numericW, numericB):
     print('Relative error W: {:.6e}'.format(rel_err_W))
     print('Relative error B: {:.6e}'.format(rel_err_B))
 
-def trainMiniBatch(train, val, net, eta=0.01, epochs=20, batch_size=100, shuffle=False):
-    N = train['images'].shape[0]
-    ind = np.arange(N)
-
-    a_train, c_train, a_val, c_val = [], [], [], []
-    trainImgT = train['images'].T
-    trainTruthT = train['one_hot'].T
-    valImgT = val['images'].T
-    valTruthT = val['one_hot'].T
-
-    for e in tqdm(range(epochs), ncols=50):
-        if shuffle:
-            np.random.shuffle(ind)
-
-        for i in range(0, N, batch_size):
-            batch_ind = ind[i: i + batch_size]
-            x = train['images'][batch_ind].T
-            truth = train['one_hot'][batch_ind].T
-
-            # do the learning
-            prob, pred = net.evaluate(x)
-            gW, gB = net.slides_gradient(x, prob, truth)
-            net.W -= eta * gW
-            net.b -= eta * gB
-
-        # Measure each epoch
-        prob, pred = net.evaluate(trainImgT)
-        c_train.append(net.cost(prob, trainTruthT))
-        a_train.append(net.accuracy(pred, trainTruthT))
-
-        prob, pred = net.evaluate(valImgT)
-        c_val.append(net.cost(prob, valTruthT))
-        a_val.append(net.accuracy(pred, valTruthT))
-
-    return np.array(a_train), np.array(c_train), np.array(a_val), np.array(c_val)
-
-
 def plotResults(title, a_train, c_train, a_val, c_val):
     plotter = LossAccPlotter(title=title,
         show_averages=False,
@@ -186,16 +149,16 @@ def weights_plot(net, dest_file, labels):
     plt.close()
     return dest_file
 
-def tryParameters(test_name, lam, epochs, batch_size, eta):
-    net = Net(cifar.in_size, cifar.out_size, lam)
-    a_train, c_train, a_val, c_val = trainMiniBatch(train, val, net, eta, epochs, batch_size)
-    prob, pred = net.evaluate(test['images'].T)
-    print('{} Test Accuracy: {:.2f}'.format(test_name, net.accuracy(pred, test['one_hot'].T)))
+
+def tryParameters(test_name, N_hidden, lam, l_rate, decay, mom, epochs=10, batch_size=200):
+    net = Net([Linear(cifar.in_size, N_hidden), ReLU(N_hidden), Linear(N_hidden, cifar.out_size), Softmax(cifar.out_size)],
+                lam, l_rate, decay, mom)
+    a_train, c_train, a_val, c_val = net.trainMiniBatch(train, val, epochs, batch_size)
+    print('{} Test Accuracy: {:.2f}'.format(test_name, net.accuracy(test['one_hot'].T, test['images'].T)))
     plotResults(test_name, a_train, c_train, a_val, c_val)
-    weights_plot(net, "plots/weights_vizualisation_{}.png".format(test_name), labels)
+    #weights_plot(net, "plots/weights_vizualisation_{}.png".format(test_name), labels)
 
 
-# Exercise 1
 cifar=CIFAR()
 labels=cifar.labels
 
@@ -203,32 +166,13 @@ train = cifar.get_batches('data_batch_1')
 val = cifar.get_batches('data_batch_2')
 test = cifar.get_batches("test_batch")
 
-# Plot label distribution
-#barPlotLabels(train, labels, "barLabels")
-#plotImages(train, "Training set")
-#plotImages(val, "Validation set")
-#plotImages(test, "Test set")
-
 # Create the network and test the accuracy before training
-net = Net([Linear(cifar.in_size, 50), ReLU(50), Linear(50, cifar.out_size), Softmax(cifar.out_size)])
-num_examples = 100
-in_data = train['images'][0:num_examples].T
-truth = train['one_hot'][0:num_examples].T
-pred = net.forward(in_data)
-net.backward(truth)
-print('Initial Accuracy: {:.2f}'.format(net.accuracy(truth, None, pred)))
+tryParameters("initTest", N_hidden=50, lam=0.1, l_rate=0.001, decay=1.0, mom=0.1)
 
 # Compare gradients
 #numericW, numericB = num_gradient(in_data, truth, net)
 #slidesW, slidesB = net.slides_gradient(in_data, prob, truth)
 #compareGradients(slidesW, slidesB, numericW, numericB)
-
-# Train the network
-#a_train, c_train, a_val, c_val = trainMiniBatch(train, val, net)
-
-#plotResults("Initial", a_train, c_train, a_val, c_val)
-
-#weights_plot(net, plot_loc + "weights_vizualisation_Initial.png", labels)
 
 # Parameter testing, using the greater train set
 train = cifar.get_batches('data_batch_1', 'data_batch_2', 'data_batch_3', 'data_batch_4') #
