@@ -7,13 +7,11 @@ import pandas as pd
 from pandas import DataFrame as df
 import numpy as np
 import matplotlib.pyplot as plt
-from net import Net
 
 from tqdm import tqdm
 from sklearn import preprocessing
 from laplotter import LossAccPlotter
 
-from layers import Softmax, ReLU, Linear, BatchNorm
 
 ds_loc="../dataset/cifar-10-batches-py/"
 plot_loc="./plots/"
@@ -338,3 +336,303 @@ def test_best():
     #truth = train['one_hot'].T
 
 #test_best()
+
+
+
+
+#
+#
+#
+#
+#
+#
+
+
+class Layer():
+    def __init__(self, in_size, out_size, lam, name):
+        self.in_size = in_size
+        self.out_size = out_size
+        self.name = name
+        self.isActivation = (False if name is "linear" else True)
+
+        if not self.isActivation:
+            # Weights
+            self.W = np.random.normal(loc=0.0, scale=0.01, size=(out_size, in_size))
+            # Bias
+            self.b = np.random.normal(loc=0.0, scale=0.01, size=(out_size, 1))
+            # Weight regularization
+            self.lam = lam
+            self.mom = {
+                'W' : np.zeros(self.W.shape),
+                'b' : np.zeros(self.b.shape)
+            }
+
+            self.resetGrad()
+        # this is a memory variable between forward/backward
+        self.x = np.empty(shape=(self.in_size, 1))
+
+
+    def forward(self, x):
+        assert x is not None
+        # sometimes we need to store input for backward
+        self.x = x
+        #print(self.name + " forward")
+        #print(self.x.shape)
+
+    def backward(self):
+        assert self.x is not None
+        #print(self.name + " back")
+        #print(self.x.shape)
+
+    def cost(self):
+        return 0
+
+    def resetGrad(self):
+        self.gW = np.zeros(self.W.shape)
+        self.gB = np.zeros(self.b.shape)
+
+    # for non-activation layers to implement
+    def update(self, l_rate=0.001):
+        pass
+
+    def updateMom(self, l_rate=0.001, momentum=0.0):
+        pass
+
+class Linear(Layer):
+    def __init__(self, in_size, out_size, lam=0, name="linear"):
+        super().__init__(in_size, out_size, lam, name)
+
+    def forward(self, x):
+        Layer.forward(self, x)
+        # Wx + b
+        return np.dot(self.W, x) + self.b
+
+    def backward(self, grad):
+        Layer.backward(self)
+        N = self.x.shape[1]
+
+        self.resetGrad()
+
+        for i in range(N):
+            p = self.x[:, i]
+            g = grad[i, :]
+
+            self.gW += np.outer(g, p)
+            self.gB += np.reshape(g, self.gB.shape)
+
+        # here's the difference in (10) and (11)
+        self.gW = (1.0/N) * self.gW + 2 * self.lam * self.W
+        self.gB /= N
+
+        return np.dot(grad, self.W)
+
+    def cost(self):
+        return self.lam * np.power(self.W, 2).sum()
+
+    def update(self, l_rate=0.001):
+        self.W -= l_rate * self.gW
+        self.b -= l_rate * self.gB
+
+    def updateMom(self, l_rate=0.001, momentum=0.0):
+        self.mom['W'] = momentum * self.mom['W'] + l_rate * self.gW
+        self.mom['b'] = momentum * self.mom['b'] + l_rate * self.gB
+
+        self.W -= self.mom['W']
+        self.b -= self.mom['b']
+
+class ReLU(Layer):
+    def __init__(self, in_size, name="relu"):
+        super().__init__(in_size, in_size, -1, name)
+
+    def forward(self, x):
+        Layer.forward(self, x)
+        # max(0, x)
+        return self.x * (self.x > 0)
+
+    def backward(self, grad):
+        Layer.backward(self)
+        return np.multiply(grad, self.x.T > 0)
+
+class Softmax(Layer):
+    def __init__(self, in_size, name="softmax"):
+        super().__init__(in_size, in_size, -1, name)
+
+    def forward(self, x):
+        assert x is not None
+        try:
+            # this should prevent error tried for
+            e = np.exp(x - x.max())
+            res = e / np.sum(e, axis=0)
+        except FloatingPointError:
+            # Gradient explosion scenario
+            print("jesus take the wheel")
+            res = np.ones(x)
+        Layer.forward(self, res)
+        return res
+
+    def backward(self, truth):
+        Layer.backward(self)
+        assert self.x.shape[1] == truth.shape[1]
+        N = truth.shape[1]
+
+        cols = ((truth[:,i], self.x[:,i]) for i in range(N))
+        grad = [self.softGrad(t, p) for (t, p) in cols]
+
+        return np.vstack(grad)
+
+    @staticmethod
+    def softGrad(t, p):
+        # Jacobian according for formulas in Ass1
+        a = np.outer(p,p)
+        b = np.dot(t, (np.diag(p) - a))
+        c = np.dot(t, p)
+        return -b/c
+
+    def cost(self, truth, prob=None):
+        x = self.x if prob is None else prob
+        assert x.shape[1] == truth.shape[1]
+        N = x.shape[1]
+
+        Py = np.multiply(truth, x).sum(axis=0)
+        Py[Py == 0] = np.finfo(float).eps # fix floats
+
+        return - np.log(Py).sum() / N
+
+class BatchNorm(Layer):
+    # https://wiseodd.github.io/techblog/2016/07/04/batchnorm/
+    def __init__(self, in_size, mu=None, s=None, name="batch_norm"):
+        super().__init__(in_size, in_size, -1, name)
+
+        self.mu = mu if mu is not None else np.zeros(shape=(in_size, 1), dtype=float)
+        self.s = s if s is not None else np.eye(in_size, dtype=float)
+
+    def forward(self, x, train=False):
+        Layer.forward(self, x)
+        # if mu, s is passed: then it's eval time not training
+        self.mu = x.mean(axis=1) if train else self.mu
+        self.s = x.var(axis=1) if train else self.s
+        return np.dot(self.s, (x.T - self.mu.T).T)
+
+    def backward(self, grad):
+        Layer.backward(self)
+        # Not implemented yet
+        return grad
+
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
+class Net():
+    # layers, weight regularization term, learning rate
+    def __init__(self, layers=[], lam=0.1, l_rate=0.001, decay=None, mom=None):
+        self.layers = layers
+        self.lam = lam
+        self.l_rate = l_rate
+        self.decay = decay
+        self.mom = mom
+
+    def forward(self, inp, train=False):
+        out = inp
+        for l in self.layers:
+            out = l.forward(out) if type(l) is not BatchNorm else l.forward(out, train)
+        return out
+
+    def backward(self, truth):
+        for l in self.layers[::-1]:
+            grad = l.backward(truth) if type(l) is Softmax else l.backward(grad)
+        return grad
+
+    def cost(self, truth, inp=None, out=None):
+        out = self.forward(inp) if out is None else out
+        c = [(l.cost(truth, out) if type(l) is Softmax else l.cost()) for l in self.layers]
+        return np.sum(c)
+
+    def accuracy(self, truth, inp=None, out=None):
+        pred = self.forward(inp) if out is None else out
+        N = truth.shape[1]
+        pred = np.argmax(pred, axis=0)
+        truth = np.argmax(truth, axis=0)
+        return np.sum(pred == truth) / N
+
+    def cost_acc(self, truth, inp=None, out=None):
+        return self.cost(truth, inp, out), self.accuracy(truth, inp, out)
+
+    def hidden_size(self):
+        for l in self.layers:
+            if not l.isActivation: return l.out_size
+        return -1
+
+    def trainMiniBatch(self, train, val, epochs=10, batch_size=200, shuffle=False):
+        N = train['images'].shape[0]
+        ind = np.arange(N)
+
+        a_train, c_train, a_val, c_val = [], [], [], []
+        trainImgT = train['images'].T
+        trainTruthT = train['one_hot'].T
+        valImgT = val['images'].T
+        valTruthT = val['one_hot'].T
+
+        for e in tqdm(range(epochs), ncols=50):
+            if shuffle:
+                np.random.shuffle(ind)
+
+            for i in range(0, N, batch_size):
+                batch_ind = ind[i: i + batch_size]
+                x = train['images'][batch_ind].T
+                truth = train['one_hot'][batch_ind].T
+
+                # do the learning
+                self.forward(x)
+                self.backward(truth)
+                self.update() if self.mom is None else self.updateMom()
+
+            if self.decay is not None:
+                self.l_rate *= self.decay
+
+
+            # Measure each epoch
+            cost, acc = self.cost_acc(trainTruthT, trainImgT)
+            c_train.append(cost)
+            a_train.append(acc)
+
+            cost, acc = self.cost_acc(valTruthT, valImgT)
+            c_val.append(cost)
+            a_val.append(acc)
+
+            if c_train[0]*3 < c_train[-1]:
+                print("Cost is rising, early stopping...")
+                break
+        return {
+            'epochs': epochs,
+            'N_hidden' : self.hidden_size(),
+            'lam' : self.lam,
+            'learning rate' : self.l_rate,
+            'decay rate' : self.decay,
+            'momentum' : self.mom,
+            'last_a_train' : a_train[-1],
+            'last_c_train' : c_train[-1],
+            'last_a_val' : a_val[-1],
+            'last_c_val' : c_val[-1],
+            'a_train' : a_train,
+            'c_train' : c_train,
+            'a_val' : a_val,
+            'c_val' : c_val,
+            }
+
+    def train(self, train, ind):
+        inp = train['images'][:,ind]
+        truth = train['one_hot'][:,ind]
+
+    def update(self):
+        for l in self.layers:
+            l.update(self.l_rate)
+
+    def updateMom(self):
+        for l in self.layers:
+            l.updateMom(self.l_rate, self.mom)

@@ -2,20 +2,21 @@
 import numpy as np
 
 from tqdm import tqdm
-from layers import Linear, Softmax, ReLU
+from layers import Linear, Softmax, ReLU, BatchNorm
 
 class Net():
     # layers, weight regularization term, learning rate
-    def __init__(self, layers=[], lam=0.1, l_rate=0.001, decay=1.0, mom=None):
+    def __init__(self, layers=[], lam=0.1, l_rate=0.001, decay=None, mom=None):
         self.layers = layers
+        self.lam = lam
         self.l_rate = l_rate
         self.decay = decay
         self.mom = mom
 
-    def forward(self, inp):
+    def forward(self, inp, train=False):
         out = inp
         for l in self.layers:
-            out = l.forward(out)
+            out = l.forward(out) if type(l) is not BatchNorm else l.forward(out, train)
         return out
 
     def backward(self, truth):
@@ -38,7 +39,12 @@ class Net():
     def cost_acc(self, truth, inp=None, out=None):
         return self.cost(truth, inp, out), self.accuracy(truth, inp, out)
 
-    def trainMiniBatch(self, train, val, epochs=10, batch_size=1000, shuffle=False):
+    def hidden_size(self):
+        for l in self.layers:
+            if not l.isActivation: return l.out_size
+        return -1
+
+    def trainMiniBatch(self, train, val, epochs=10, batch_size=200, shuffle=False):
         N = train['images'].shape[0]
         ind = np.arange(N)
 
@@ -62,6 +68,10 @@ class Net():
                 self.backward(truth)
                 self.update() if self.mom is None else self.updateMom()
 
+            if self.decay is not None:
+                self.l_rate *= self.decay
+
+
             # Measure each epoch
             cost, acc = self.cost_acc(trainTruthT, trainImgT)
             c_train.append(cost)
@@ -71,7 +81,25 @@ class Net():
             c_val.append(cost)
             a_val.append(acc)
 
-        return np.array(a_train), np.array(c_train), np.array(a_val), np.array(c_val)
+            if c_train[0]*3 < c_train[-1]:
+                print("Cost is rising, early stopping...")
+                break
+        return {
+            'epochs': epochs,
+            'N_hidden' : self.hidden_size(),
+            'lam' : self.lam,
+            'learning rate' : self.l_rate,
+            'decay rate' : self.decay,
+            'momentum' : self.mom,
+            'last_a_train' : a_train[-1],
+            'last_c_train' : c_train[-1],
+            'last_a_val' : a_val[-1],
+            'last_c_val' : c_val[-1],
+            'a_train' : a_train,
+            'c_train' : c_train,
+            'a_val' : a_val,
+            'c_val' : c_val,
+            }
 
     def train(self, train, ind):
         inp = train['images'][:,ind]

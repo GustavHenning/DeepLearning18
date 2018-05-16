@@ -149,3 +149,23 @@ class Softmax(Layer):
         Py[Py == 0] = np.finfo(float).eps # fix floats
 
         return - np.log(Py).sum() / N
+
+class BatchNorm(Layer):
+    # https://wiseodd.github.io/techblog/2016/07/04/batchnorm/
+    def __init__(self, in_size, mu=None, s=None, name="batch_norm"):
+        super().__init__(in_size, in_size, -1, name)
+
+        self.mu = mu if mu is not None else np.zeros(shape=(in_size, 1), dtype=float)
+        self.s = s if s is not None else np.eye(in_size, dtype=float)
+
+    def forward(self, x, train=False):
+        Layer.forward(self, x)
+        # if mu, s is passed: then it's eval time not training
+        self.mu = x.mean(axis=1) if train else self.mu
+        self.s = x.var(axis=1) if train else self.s
+        return np.dot(self.s, (x.T - self.mu.T).T)
+
+    def backward(self, grad):
+        Layer.backward(self)
+        # Not implemented yet
+        return grad
