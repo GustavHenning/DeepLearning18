@@ -232,11 +232,11 @@ def gradient_check(lam, lin_neurons, with_BN):
     layers = []
 
     for N in lin_neurons:
-        is_one_layer_net = len(lin_neurons) == 1 or count < (len(lin_neurons) - 1)
+        not_last_layer = len(lin_neurons) == 1 or count < (len(lin_neurons) - 1)
         layers.append(Linear(cifar.in_size if count == 0 else lin_neurons[count-1],
-        N if is_one_layer_net else cifar.out_size,
+        N if not_last_layer else cifar.out_size,
         lam=lam))
-        if is_one_layer_net:
+        if not_last_layer:
             if with_BN:
                 layers.append(BatchNorm(N, trainMean()))
             layers.append(ReLU(N))
