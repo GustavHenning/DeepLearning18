@@ -222,56 +222,50 @@ def num_gradient(grad_x, grad_truth, g_net, lin, init_cost, h=1e-6):
     print_grad_diff(lin.gW, gW, lin.gB, gB)
     return gW, gB
 
-def gradient_check():
+def gradient_check(lam, lin_neurons, with_BN):
     # prepare a subset of the train data
     subset=50
     grad_train_img = train['images'][:subset, :].T
     grad_train_truth = train['one_hot'][:subset, :].T
 
+    count = 0
+    layers = []
+    for N in lin_neurons:
+        layers.append(Linear(cifar.in_size if count == 0 else lin_neurons[count-1],
+        N if count < (len(lin_neurons) - 1) else cifar.out_size,
+        lam=lam))
+        if len(lin_neurons) == 1 or count < (len(lin_neurons) - 1):
+            if with_BN:
+                layers.append(BatchNorm(N, trainMean()))
+            layers.append(ReLU(N))
+        count += 1
+    layers.append(Softmax(cifar.out_size))
     # init the network
-    N_hidden=50
-    lin = [Linear(cifar.in_size, N_hidden, lam=0.1), Linear(N_hidden, cifar.out_size, lam=0.1)]
-    g_net = Net([
-    lin[0],
-    ReLU(N_hidden),
-    lin[1],
-    Softmax(cifar.out_size)],
-                lam=0.1, l_rate=0.001, decay=0.99, mom=0.99)
+    g_net = Net(layers, lam=lam, l_rate=0.001, decay=0.99, mom=0.99)
 
     # do the pass
     grad_out = g_net.forward(grad_train_img)
     g_net.backward(grad_train_truth)
     cost = g_net.cost(grad_train_truth, out=grad_out)
 
+
     # calc the numeric grad for each linear layer
-    for linear in lin:
+    for linear in [l for l in layers if l.isActivation == False]:
         num_gradient(grad_train_img, grad_train_truth, g_net, linear, cost)
 
 
-#gradient_check()
+gradient_check(0.0, [50, 30, 15], False)
 
 #
 #
-# TODO test overfitting
+# TODO test comparison with/(out) batch norm
 #
 #
 
-def test_overfit(momentum):
-    subset=100
-    img_temp = train['images']
-    truth_temp = train['one_hot']
-    train['images'] = train['images'][:subset, :]
-    train['one_hot'] = train['one_hot'][:subset, :]
+def compareBatchNorm(momentum):
+    # TODO
+    pass
 
-    tryParameters("overfitTest_mom_{}".format(momentum), N_hidden=50, lam=0, l_rate=0.005, decay=0.99, mom=momentum, epochs=200)
-
-    train['images'] = img_temp
-    train['one_hot'] = truth_temp
-
-#test_overfit(momentum=0.5)
-#test_overfit(momentum=0.75)
-#test_overfit(momentum=0.8)
-#test_overfit(momentum=0.95)
 
 #
 #
