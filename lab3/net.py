@@ -64,7 +64,7 @@ class Net():
                 truth = train['one_hot'][batch_ind].T
 
                 # do the learning
-                self.forward(x)
+                self.forward(x, train=True)
                 self.backward(truth)
                 self.update() if self.mom is None else self.updateMom()
 

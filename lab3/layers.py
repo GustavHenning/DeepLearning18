@@ -152,20 +152,52 @@ class Softmax(Layer):
 
 class BatchNorm(Layer):
     # https://wiseodd.github.io/techblog/2016/07/04/batchnorm/
-    def __init__(self, in_size, mu=None, s=None, name="batch_norm"):
+    def __init__(self, in_size, mu=None, s=None, alpha=0.99, name="batch_norm"):
         super().__init__(in_size, in_size, -1, name)
 
-        self.mu = mu if mu is not None else np.zeros(shape=(in_size, 1), dtype=float)
-        self.s = s if s is not None else np.eye(in_size, dtype=float)
+        self.x = np.empty(shape=(self.in_size, 1))
+        self.mu = np.zeros(shape=(in_size, 1), dtype=float)
+        self.s = np.ones(shape=(in_size, 1), dtype=float)
+
+        self.avg_mu = mu
+        self.avg_s = s
+        self.alpha = alpha
+        # fix floats
+        if self.avg_mu is not None:
+            self.avg_mu[self.avg_mu == 0] = np.finfo(float).eps
+        if self.avg_s is not None:
+            self.avg_s[self.avg_s == 0] = np.finfo(float).eps
 
     def forward(self, x, train=False):
         Layer.forward(self, x)
-        # if mu, s is passed: then it's eval time not training
-        self.mu = x.mean(axis=1) if train else self.mu
-        self.s = x.var(axis=1) if train else self.s
-        return np.dot(self.s, (x.T - self.mu.T).T)
+        self.x = x if train else self.x
+        self.mu = x.mean(axis=1, keepdims=True) if train else self.avg_mu
+        self.s = x.var(axis=1, keepdims=True) if train else self.avg_s
+        # fix floats
+        self.mu[self.mu == 0] = np.finfo(float).eps
+        self.s[self.s == 0] = np.finfo(float).eps
+        # running avg
+        self.avg_mu = self.mu if self.avg_mu is None else self.avg_mu
+        self.avg_s = self.s if self.avg_s is None else self.avg_s
+
+        self.mu = (self.alpha * self.avg_mu) + (1.0 - self.alpha) * self.mu
+        self.s = (self.alpha * self.avg_s) + (1.0 - self.alpha) * self.s
+
+        return self.s ** -0.5 * (x - self.mu)
 
     def backward(self, grad):
         Layer.backward(self)
-        # Not implemented yet
-        return grad
+        N = self.x.shape[1]
+
+        # Begin formula land, lecture 4
+        gT = grad.T
+        inv_sqrt_mu = self.s ** -0.5
+        #print(inv_sqrt_mu)
+        x_center = self.x - self.mu
+
+        dJ_dv = (self.s ** -1.5) * (gT * x_center).sum(axis=1, keepdims=True)
+        dJ_dMu = - inv_sqrt_mu * gT.sum(axis=1, keepdims=True)
+
+        gT = gT * inv_sqrt_mu + dJ_dv * (x_center / N) + (dJ_dMu / N)
+
+        return gT.T # back to normal

@@ -159,7 +159,7 @@ def trainMean():
 
 def tryParameters(test_name, N_hidden, lam, l_rate, decay, mom, epochs=50, batch_size=250):
     net = Net([
-    BatchNorm(cifar.in_size, trainMean()),
+    BatchNorm(cifar.in_size),
     Linear(cifar.in_size, N_hidden, lam=lam),
     ReLU(N_hidden),
     Linear(N_hidden, cifar.out_size, lam=lam),
@@ -232,21 +232,24 @@ def gradient_check(lam, lin_neurons, with_BN):
     layers = []
 
     for N in lin_neurons:
-        not_last_layer = len(lin_neurons) == 1 or count < (len(lin_neurons) - 1)
+        not_last_layer = count < (len(lin_neurons) - 1)
         layers.append(Linear(cifar.in_size if count == 0 else lin_neurons[count-1],
         N if not_last_layer else cifar.out_size,
         lam=lam))
         if not_last_layer:
             if with_BN:
-                layers.append(BatchNorm(N, trainMean()))
+                layers.append(BatchNorm(N))
             layers.append(ReLU(N))
         count += 1
+    if len(lin_neurons) == 1 and with_BN:
+        layers.append(BatchNorm(cifar.out_size))
     layers.append(Softmax(cifar.out_size))
     # init the network
+    print(["{}:{},{}".format(l.name, l.in_size, l.out_size) for l in layers])
     g_net = Net(layers, lam=lam, l_rate=0.001, decay=0.99, mom=0.99)
 
     # do the pass
-    grad_out = g_net.forward(grad_train_img)
+    grad_out = g_net.forward(grad_train_img, train=True)
     g_net.backward(grad_train_truth)
     cost = g_net.cost(grad_train_truth, out=grad_out)
 
@@ -256,7 +259,14 @@ def gradient_check(lam, lin_neurons, with_BN):
         num_gradient(grad_train_img, grad_train_truth, g_net, linear, cost)
 
 
+gradient_check(0.0, [50], False) # one layer without reg
+gradient_check(0.0, [50], True) # one layer without BN
+gradient_check(0.2, [50], False) # one layer with reg
+gradient_check(0.0, [50, 30], True) # one layer with BN
+gradient_check(0.0, [50, 30], False) # two layer
 gradient_check(0.0, [50, 30, 15], False)
+gradient_check(0.0, [50, 30, 15], True)
+gradient_check(0.0, [50, 50, 30, 15], True)
 
 #
 #
