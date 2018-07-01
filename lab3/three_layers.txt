@@ -1,0 +1,18 @@
+['linear:3072,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3layerTest_lrate_0.095111 Test Accuracy: 0.17
+Final train a/c, val a/c: 0.18/2.45, 0.17/2.48
+['linear:3072,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3layerTest_lrate_0.0475555 Test Accuracy: 0.18
+Final train a/c, val a/c: 0.18/2.15, 0.18/2.16
+['linear:3072,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3layerTest_lrate_0.031703666666666665 Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/2.40, 0.10/2.39
+['linear:3072,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3layerTest_lrate_0.02377775 Test Accuracy: 0.24
+Final train a/c, val a/c: 0.27/1.98, 0.24/2.07
+['linear:3072,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3layerTest_lrate_0.011888875 Test Accuracy: 0.33
+Final train a/c, val a/c: 0.39/1.73, 0.34/1.91
+['linear:3072,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3layerTest_lrate_0.0095111 Test Accuracy: 0.29
+Final train a/c, val a/c: 0.33/1.88, 0.29/2.02

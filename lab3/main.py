@@ -157,14 +157,27 @@ def trainMean():
     return train['images'].T.mean(axis=1)
 
 
-def tryParameters(test_name, N_hidden, lam, l_rate, decay, mom, epochs=50, batch_size=250):
-    net = Net([
-    BatchNorm(cifar.in_size),
-    Linear(cifar.in_size, N_hidden, lam=lam),
-    ReLU(N_hidden),
-    Linear(N_hidden, cifar.out_size, lam=lam),
-    Softmax(cifar.out_size)],
-                lam, l_rate, decay, mom)
+def tryParameters(test_name, lin_neurons, with_BN, lam, l_rate, decay, mom, epochs=50, batch_size=50):
+
+    count = 0
+    layers = []
+
+    for N in lin_neurons:
+        not_last_layer = count < (len(lin_neurons) - 1)
+        layers.append(Linear(cifar.in_size if count == 0 else lin_neurons[count-1],
+        N if not_last_layer else cifar.out_size,
+        lam=lam))
+        if not_last_layer:
+            if with_BN:
+                layers.append(BatchNorm(N))
+            layers.append(ReLU(N))
+        count += 1
+    if len(lin_neurons) == 1 and with_BN:
+        layers.append(BatchNorm(cifar.out_size))
+    layers.append(Softmax(cifar.out_size))
+    # init the network
+    print(["{}:{},{}".format(l.name, l.in_size, l.out_size) for l in layers])
+    net = Net(layers, lam=lam, l_rate=l_rate, decay=0.99, mom=0.99)
     results = net.trainMiniBatch(train, val, epochs, batch_size, shuffle=True)
     print('{} Test Accuracy: {:.2f}'.format(test_name, net.accuracy(test['one_hot'].T, test['images'].T)))
     print('Final train a/c, val a/c: {:.2f}/{:.2f}, {:.2f}/{:.2f}'.format(results['last_a_train'], results['last_c_train'], results['last_a_val'], results['last_c_val']))
@@ -259,25 +272,60 @@ def gradient_check(lam, lin_neurons, with_BN):
         num_gradient(grad_train_img, grad_train_truth, g_net, linear, cost)
 
 
-gradient_check(0.0, [50], False) # one layer without reg
-gradient_check(0.0, [50], True) # one layer without BN
-gradient_check(0.2, [50], False) # one layer with reg
-gradient_check(0.0, [50, 30], True) # one layer with BN
-gradient_check(0.0, [50, 30], False) # two layer
-gradient_check(0.0, [50, 30, 15], False)
-gradient_check(0.0, [50, 30, 15], True)
-gradient_check(0.0, [50, 50, 30, 15], True)
-
 #
 #
 # TODO test comparison with/(out) batch norm
 #
 #
+def compareBatchNorm():
+    gradient_check(0.0, [50], False) # one layer without reg
+    gradient_check(0.0, [50], True) # one layer without BN
+    gradient_check(0.2, [50], False) # one layer with reg
+    gradient_check(0.0, [50, 30], True) # one layer with BN
+    gradient_check(0.0, [50, 30], False) # two layer
+    gradient_check(0.0, [50, 30, 15], False)
+    gradient_check(0.0, [50, 30, 15], True)
+    gradient_check(0.0, [50, 50, 30, 15], True)
 
-def compareBatchNorm(momentum):
-    # TODO
-    pass
+#compareBatchNorm() TODO Redo this 
 
+
+def tryOne():
+    tryParameters("oneLayerWithoutBN", lin_neurons=[50,30],
+                                with_BN=False,
+                                lam=0.0,
+                                l_rate=0.001,
+                                decay=0.99,
+                                mom=0.8,
+                                epochs=100)
+
+    tryParameters("oneLayerWithBN", lin_neurons=[50],
+                                with_BN=True,
+                                lam=0.0,
+                                l_rate=0.001,
+                                decay=0.99,
+                                mom=0.8,
+                                epochs=100)
+
+tryOne()
+
+#
+#
+#
+# TODO Can we train a 3-layer network?
+#
+# Note: We use the best performing network parameters from the last exercise.
+#
+
+def tryThreeLayers():
+    l_rates = [0.095111, 0.095111/4, 0.095111/10]
+    for l in l_rates:
+        tryParameters("3layerTest_lrate_{}".format(l), lin_neurons=[50, 30],
+        with_BN=False, lam=0.00050,
+        l_rate=l, decay=0.995,
+        mom=0.8, epochs=200)
+
+tryThreeLayers()
 
 #
 #
@@ -290,7 +338,8 @@ def search(reg_range, l_rate_range, dest_file, epochs=10):
     for i, params in enumerate(tqdm(list(itertools.product(reg_range, l_rate_range)), desc=dest_file, ncols=50)):
         run_name="{}_".format(i) + dest_file
         results = tryParameters(run_name,
-                                N_hidden=50,
+                                lin_neurons = [50, 30],
+                                with_BN=True,
                                 lam=params[0],
                                 l_rate=params[1],
                                 decay=0.995,
@@ -302,12 +351,15 @@ def doSearch():
     # coarse search
     reg_range = [0.001, 0.005, 0.01, 0.05, 0.1, 0.25, 0.5]
     l_rate_range = list(reversed(reg_range))
+    l_rate_range[:] = [x/10.0 for x in l_rate_range]
+    print(l_rate_range)
     search(reg_range, l_rate_range, "coarse.csv", epochs=5)
     # fine search
     reg_range = np.linspace(0.005, 0.0005, num=7)
-    l_rate_range = np.linspace(0.35, 0.1, num=4)
+    l_rate_range = np.linspace(0.1, 0.0001, num=7) # we lower this from feedback of ex2
     search(reg_range, l_rate_range, "fine.csv", epochs=10)
-#doSearch()
+doSearch()
+
 
 #
 #

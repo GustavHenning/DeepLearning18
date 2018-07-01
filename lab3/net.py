@@ -22,6 +22,8 @@ class Net():
     def backward(self, truth):
         for l in self.layers[::-1]:
             grad = l.backward(truth) if type(l) is Softmax else l.backward(grad)
+        if np.abs(grad).max() > 1000:
+            print('Huge gradient at ', "{}:{},{}: ".format(l.name, l.in_size, l.out_size), np.abs(grad).max())
         return grad
 
     def cost(self, truth, inp=None, out=None):

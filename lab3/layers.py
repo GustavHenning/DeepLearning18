@@ -1,5 +1,9 @@
 import numpy as np
 
+def Xavier(shape):
+    var = 2 / (shape[0] + shape[1])
+    return np.random.normal(0, np.sqrt(var), shape)
+
 class Layer():
     def __init__(self, in_size, out_size, lam, name):
         self.in_size = in_size
@@ -9,9 +13,13 @@ class Layer():
 
         if not self.isActivation:
             # Weights
-            self.W = np.random.normal(loc=0.0, scale=0.01, size=(out_size, in_size))
+            self.W = Xavier((out_size, in_size))
+            #self.W = np.random.normal(loc=0.0, scale=0.01, size=(out_size, in_size))
+            #print(self.W.shape)
             # Bias
-            self.b = np.random.normal(loc=0.0, scale=0.01, size=(out_size, 1))
+            self.b = Xavier((out_size, 1))
+            #self.b = np.random.normal(loc=0.0, scale=0.01, size=(out_size, 1))
+            #print(self.b.shape)
             # Weight regularization
             self.lam = lam
             self.mom = {
@@ -99,11 +107,11 @@ class ReLU(Layer):
     def forward(self, x):
         Layer.forward(self, x)
         # max(0, x)
-        return self.x * (self.x > 0)
+        return self.x * (self.x > 0).astype(int)
 
     def backward(self, grad):
         Layer.backward(self)
-        return np.multiply(grad, self.x.T > 0)
+        return np.multiply(grad, (self.x > 0).astype(int))
 
 class Softmax(Layer):
     def __init__(self, in_size, name="softmax"):
@@ -113,7 +121,7 @@ class Softmax(Layer):
         assert x is not None
         try:
             # this should prevent error tried for
-            e = np.exp(x - x.max())
+            e = np.exp(x)
             res = e / np.sum(e, axis=0)
         except FloatingPointError:
             # Gradient explosion scenario
@@ -180,8 +188,8 @@ class BatchNorm(Layer):
         self.avg_mu = self.mu if self.avg_mu is None else self.avg_mu
         self.avg_s = self.s if self.avg_s is None else self.avg_s
 
-        self.mu = (self.alpha * self.avg_mu) + (1.0 - self.alpha) * self.mu
-        self.s = (self.alpha * self.avg_s) + (1.0 - self.alpha) * self.s
+        self.avg_mu = (self.alpha * self.avg_mu) + (1.0 - self.alpha) * self.mu
+        self.avg_s = (self.alpha * self.avg_s) + (1.0 - self.alpha) * self.s
 
         return self.s ** -0.5 * (x - self.mu)
 
@@ -195,7 +203,7 @@ class BatchNorm(Layer):
         #print(inv_sqrt_mu)
         x_center = self.x - self.mu
 
-        dJ_dv = (self.s ** -1.5) * (gT * x_center).sum(axis=1, keepdims=True)
+        dJ_dv = - (self.s ** -1.5) * (gT * x_center).sum(axis=1, keepdims=True)
         dJ_dMu = - inv_sqrt_mu * gT.sum(axis=1, keepdims=True)
 
         gT = gT * inv_sqrt_mu + dJ_dv * (x_center / N) + (dJ_dMu / N)

@@ -1,0 +1,101 @@
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+0_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/nan, 0.10/nan
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+1_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/2059105.43, 0.10/2059105.43
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+2_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/nan, 0.10/nan
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/nan, 0.10/nan
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+4_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/28252.65, 0.10/28252.65
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+5_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/587.45, 0.10/587.45
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+6_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/10.31, 0.10/10.31
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+7_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/nan, 0.10/nan
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+8_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/nan, 0.10/nan
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+9_fine.csv Test Accuracy: 0.09
+Final train a/c, val a/c: 0.09/526849.20, 0.09/526849.20
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+10_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/nan, 0.10/nan
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+11_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/60794.08, 0.10/60794.07
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+12_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/1160.28, 0.10/1160.29
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+13_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/20.74, 0.10/20.49
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+14_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/nan, 0.10/nan
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+15_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/nan, 0.10/nan
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+16_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/152659.83, 0.10/152659.82
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+17_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/476848.19, 0.10/476848.19
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+18_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/141398.58, 0.10/141398.59
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+19_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/13867.87, 0.10/13867.87
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+20_fine.csv Test Accuracy: 0.13
+Final train a/c, val a/c: 0.13/2.57, 0.13/2.58
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+21_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/nan, 0.10/nan
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+22_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/nan, 0.10/nan
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+23_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/nan, 0.10/nan
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+24_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/232695.47, 0.10/232695.47
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+25_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/123559.20, 0.10/123559.20
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+26_fine.csv Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/3804.22, 0.10/3804.22
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Cost is rising, early stopping...
+27_fine.csv Test Accuracy: 0.13
+Final train a/c, val a/c: 0.13/7.20, 0.13/7.22
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
