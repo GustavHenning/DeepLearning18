@@ -111,7 +111,7 @@ class ReLU(Layer):
 
     def backward(self, grad):
         Layer.backward(self)
-        return np.multiply(grad, (self.x > 0).astype(int))
+        return np.multiply(grad, (self.x.T > 0).astype(int))
 
 class Softmax(Layer):
     def __init__(self, in_size, name="softmax"):

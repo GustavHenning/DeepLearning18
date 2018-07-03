@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import itertools
 import pickle
 import scipy
@@ -287,7 +289,7 @@ def compareBatchNorm():
     gradient_check(0.0, [50, 30, 15], True)
     gradient_check(0.0, [50, 50, 30, 15], True)
 
-#compareBatchNorm() TODO Redo this 
+compareBatchNorm()
 
 
 def tryOne():
