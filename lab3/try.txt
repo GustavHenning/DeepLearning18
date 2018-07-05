@@ -1,0 +1,369 @@
+['linear:3072,10', 'softmax:10,10']
+Gradient relative error check:
+Relative error W: 3.326530e-04
+Relative error B: 4.134471e-07
+['linear:3072,10', 'batch_norm:10,10', 'softmax:10,10']
+Gradient relative error check:
+Relative error W: 1.594866e+03
+Relative error B: 1.145615e+00
+['linear:3072,10', 'softmax:10,10']
+Gradient relative error check:
+Relative error W: 6.487426e-03
+Relative error B: 4.218847e-07
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Gradient relative error check:
+Relative error W: 4.473983e+03
+Relative error B: 3.142994e+00
+Gradient relative error check:
+Relative error W: 1.031220e-05
+Relative error B: 4.192202e-07
+['linear:3072,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+Gradient relative error check:
+Relative error W: 1.984407e-04
+Relative error B: 2.702709e-07
+Gradient relative error check:
+Relative error W: 4.741109e-06
+Relative error B: 2.797762e-07
+['linear:3072,50', 'relu:50,50', 'linear:50,30', 'relu:30,30', 'linear:30,10', 'softmax:10,10']
+Gradient relative error check:
+Relative error W: 1.243293e-04
+Relative error B: 1.534972e-07
+Gradient relative error check:
+Relative error W: 2.763618e-06
+Relative error B: 3.504453e-07
+Gradient relative error check:
+Relative error W: 1.490984e-06
+Relative error B: 4.254375e-07
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,30', 'batch_norm:30,30', 'relu:30,30', 'linear:30,10', 'softmax:10,10']
+Gradient relative error check:
+Relative error W: 4.180427e+03
+Relative error B: 2.916732e+00
+Gradient relative error check:
+Relative error W: 2.326305e+01
+Relative error B: 1.137916e+00
+Gradient relative error check:
+Relative error W: 5.938361e-06
+Relative error B: 4.112266e-07
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,30', 'batch_norm:30,30', 'relu:30,30', 'linear:30,10', 'softmax:10,10']
+Gradient relative error check:
+Relative error W: 4.642726e+03
+Relative error B: 3.040086e+00
+Gradient relative error check:
+Relative error W: 3.772615e+01
+Relative error B: 1.741454e+00
+Gradient relative error check:
+Relative error W: 1.702047e+01
+Relative error B: 8.302567e-01
+Gradient relative error check:
+Relative error W: 6.153300e-06
+Relative error B: 4.147793e-07
+['linear:3072,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+oneLayerWithoutBN Test Accuracy: 0.42
+Final train a/c, val a/c: 0.56/1.24, 0.42/1.71
+['linear:3072,10', 'batch_norm:10,10', 'softmax:10,10']
+oneLayerWithBN Test Accuracy: 0.35
+Final train a/c, val a/c: 0.48/1.58, 0.35/1.89
+['linear:3072,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3layerTest_lrate_0.095111 Test Accuracy: 0.10
+Final train a/c, val a/c: 0.10/2.31, 0.10/2.31
+['linear:3072,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3layerTest_lrate_0.02377775 Test Accuracy: 0.36
+Final train a/c, val a/c: 0.43/1.64, 0.35/1.90
+['linear:3072,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3layerTest_lrate_0.0095111 Test Accuracy: 0.37
+Final train a/c, val a/c: 0.50/1.47, 0.37/1.96
+[0.05, 0.025, 0.01, 0.005, 0.001, 0.0005, 0.0001]
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+0_coarse.csv Test Accuracy: 0.25
+Final train a/c, val a/c: 0.32/2.79, 0.24/3.28
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+1_coarse.csv Test Accuracy: 0.25
+Final train a/c, val a/c: 0.37/2.81, 0.25/3.73
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+2_coarse.csv Test Accuracy: 0.34
+Final train a/c, val a/c: 0.62/1.42, 0.34/2.75
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3_coarse.csv Test Accuracy: 0.33
+Final train a/c, val a/c: 0.69/1.26, 0.34/2.86
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+4_coarse.csv Test Accuracy: 0.35
+Final train a/c, val a/c: 0.81/0.83, 0.35/2.46
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+5_coarse.csv Test Accuracy: 0.35
+Final train a/c, val a/c: 0.73/1.01, 0.35/2.22
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+6_coarse.csv Test Accuracy: 0.42
+Final train a/c, val a/c: 0.59/1.41, 0.41/1.81
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+7_coarse.csv Test Accuracy: 0.27
+Final train a/c, val a/c: 0.30/2.32, 0.27/2.50
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+8_coarse.csv Test Accuracy: 0.32
+Final train a/c, val a/c: 0.38/2.00, 0.31/2.22
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+9_coarse.csv Test Accuracy: 0.35
+Final train a/c, val a/c: 0.48/1.78, 0.34/2.22
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+10_coarse.csv Test Accuracy: 0.25
+Final train a/c, val a/c: 0.34/2.25, 0.25/2.79
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+11_coarse.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.61/1.45, 0.31/2.57
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+12_coarse.csv Test Accuracy: 0.30
+Final train a/c, val a/c: 0.54/1.61, 0.30/2.68
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+13_coarse.csv Test Accuracy: 0.42
+Final train a/c, val a/c: 0.60/1.69, 0.41/2.10
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+14_coarse.csv Test Accuracy: 0.29
+Final train a/c, val a/c: 0.31/2.37, 0.29/2.42
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+15_coarse.csv Test Accuracy: 0.34
+Final train a/c, val a/c: 0.37/1.98, 0.33/2.09
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+16_coarse.csv Test Accuracy: 0.23
+Final train a/c, val a/c: 0.28/2.52, 0.24/2.73
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+17_coarse.csv Test Accuracy: 0.29
+Final train a/c, val a/c: 0.35/2.26, 0.28/2.59
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+18_coarse.csv Test Accuracy: 0.34
+Final train a/c, val a/c: 0.59/1.59, 0.34/2.31
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+19_coarse.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.54/1.68, 0.31/2.50
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+20_coarse.csv Test Accuracy: 0.42
+Final train a/c, val a/c: 0.60/1.82, 0.41/2.20
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+21_coarse.csv Test Accuracy: 0.26
+Final train a/c, val a/c: 0.27/2.26, 0.25/2.30
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+22_coarse.csv Test Accuracy: 0.28
+Final train a/c, val a/c: 0.29/2.15, 0.28/2.20
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+23_coarse.csv Test Accuracy: 0.32
+Final train a/c, val a/c: 0.35/2.08, 0.32/2.13
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+24_coarse.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.33/2.04, 0.30/2.12
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+25_coarse.csv Test Accuracy: 0.35
+Final train a/c, val a/c: 0.45/1.95, 0.35/2.11
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+26_coarse.csv Test Accuracy: 0.36
+Final train a/c, val a/c: 0.48/1.89, 0.35/2.12
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+27_coarse.csv Test Accuracy: 0.33
+Final train a/c, val a/c: 0.55/1.79, 0.33/2.19
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+28_coarse.csv Test Accuracy: 0.24
+Final train a/c, val a/c: 0.24/2.37, 0.23/2.39
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+29_coarse.csv Test Accuracy: 0.26
+Final train a/c, val a/c: 0.27/2.26, 0.27/2.29
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+30_coarse.csv Test Accuracy: 0.30
+Final train a/c, val a/c: 0.31/2.13, 0.30/2.16
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+31_coarse.csv Test Accuracy: 0.33
+Final train a/c, val a/c: 0.35/2.10, 0.33/2.13
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+32_coarse.csv Test Accuracy: 0.36
+Final train a/c, val a/c: 0.42/1.98, 0.35/2.08
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+33_coarse.csv Test Accuracy: 0.36
+Final train a/c, val a/c: 0.44/1.92, 0.36/2.06
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+34_coarse.csv Test Accuracy: 0.33
+Final train a/c, val a/c: 0.49/1.92, 0.33/2.19
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+35_coarse.csv Test Accuracy: 0.24
+Final train a/c, val a/c: 0.25/2.35, 0.24/2.37
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+36_coarse.csv Test Accuracy: 0.23
+Final train a/c, val a/c: 0.24/2.28, 0.23/2.29
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+37_coarse.csv Test Accuracy: 0.29
+Final train a/c, val a/c: 0.30/2.19, 0.28/2.21
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+38_coarse.csv Test Accuracy: 0.25
+Final train a/c, val a/c: 0.26/2.18, 0.25/2.20
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+39_coarse.csv Test Accuracy: 0.34
+Final train a/c, val a/c: 0.37/2.13, 0.33/2.17
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+40_coarse.csv Test Accuracy: 0.34
+Final train a/c, val a/c: 0.39/2.04, 0.34/2.11
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+41_coarse.csv Test Accuracy: 0.29
+Final train a/c, val a/c: 0.37/2.09, 0.30/2.21
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+42_coarse.csv Test Accuracy: 0.16
+Final train a/c, val a/c: 0.17/2.45, 0.16/2.46
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+43_coarse.csv Test Accuracy: 0.15
+Final train a/c, val a/c: 0.15/2.35, 0.15/2.36
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+44_coarse.csv Test Accuracy: 0.17
+Final train a/c, val a/c: 0.18/2.28, 0.17/2.29
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+45_coarse.csv Test Accuracy: 0.27
+Final train a/c, val a/c: 0.28/2.21, 0.26/2.23
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+46_coarse.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.34/2.17, 0.32/2.19
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+47_coarse.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.34/2.17, 0.30/2.20
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+48_coarse.csv Test Accuracy: 0.33
+Final train a/c, val a/c: 0.39/2.16, 0.33/2.22
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+0_fine.csv Test Accuracy: 0.30
+Final train a/c, val a/c: 0.38/2.13, 0.31/2.46
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+1_fine.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.40/2.04, 0.31/2.43
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+2_fine.csv Test Accuracy: 0.35
+Final train a/c, val a/c: 0.50/1.78, 0.35/2.24
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+3_fine.csv Test Accuracy: 0.27
+Final train a/c, val a/c: 0.38/2.20, 0.27/2.72
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+4_fine.csv Test Accuracy: 0.26
+Final train a/c, val a/c: 0.35/2.80, 0.26/3.39
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+5_fine.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.52/1.75, 0.31/2.57
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+6_fine.csv Test Accuracy: 0.40
+Final train a/c, val a/c: 0.69/1.43, 0.40/2.09
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+7_fine.csv Test Accuracy: 0.36
+Final train a/c, val a/c: 0.47/1.76, 0.35/2.15
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+8_fine.csv Test Accuracy: 0.36
+Final train a/c, val a/c: 0.48/1.81, 0.36/2.28
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+9_fine.csv Test Accuracy: 0.32
+Final train a/c, val a/c: 0.45/1.88, 0.32/2.40
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+10_fine.csv Test Accuracy: 0.30
+Final train a/c, val a/c: 0.43/2.05, 0.30/2.64
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+11_fine.csv Test Accuracy: 0.21
+Final train a/c, val a/c: 0.30/2.42, 0.21/3.16
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+12_fine.csv Test Accuracy: 0.32
+Final train a/c, val a/c: 0.58/1.59, 0.33/2.48
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+13_fine.csv Test Accuracy: 0.40
+Final train a/c, val a/c: 0.71/1.38, 0.40/2.05
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+14_fine.csv Test Accuracy: 0.37
+Final train a/c, val a/c: 0.50/1.84, 0.36/2.31
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+15_fine.csv Test Accuracy: 0.28
+Final train a/c, val a/c: 0.37/2.36, 0.27/2.87
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+16_fine.csv Test Accuracy: 0.37
+Final train a/c, val a/c: 0.52/1.71, 0.37/2.30
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+17_fine.csv Test Accuracy: 0.30
+Final train a/c, val a/c: 0.45/2.05, 0.31/2.74
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+18_fine.csv Test Accuracy: 0.33
+Final train a/c, val a/c: 0.53/1.73, 0.34/2.62
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+19_fine.csv Test Accuracy: 0.29
+Final train a/c, val a/c: 0.50/1.84, 0.28/2.93
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+20_fine.csv Test Accuracy: 0.40
+Final train a/c, val a/c: 0.73/1.32, 0.40/2.05
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+21_fine.csv Test Accuracy: 0.34
+Final train a/c, val a/c: 0.47/1.89, 0.33/2.50
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+22_fine.csv Test Accuracy: 0.34
+Final train a/c, val a/c: 0.50/1.78, 0.34/2.38
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+23_fine.csv Test Accuracy: 0.32
+Final train a/c, val a/c: 0.47/1.98, 0.32/2.65
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+24_fine.csv Test Accuracy: 0.28
+Final train a/c, val a/c: 0.44/2.24, 0.28/3.01
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+25_fine.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.59/1.62, 0.32/2.62
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+26_fine.csv Test Accuracy: 0.34
+Final train a/c, val a/c: 0.64/1.44, 0.33/2.73
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+27_fine.csv Test Accuracy: 0.41
+Final train a/c, val a/c: 0.70/1.30, 0.40/1.98
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+28_fine.csv Test Accuracy: 0.30
+Final train a/c, val a/c: 0.43/2.12, 0.30/2.90
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+29_fine.csv Test Accuracy: 0.28
+Final train a/c, val a/c: 0.39/3.01, 0.27/3.77
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+30_fine.csv Test Accuracy: 0.33
+Final train a/c, val a/c: 0.54/1.68, 0.33/2.52
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+31_fine.csv Test Accuracy: 0.26
+Final train a/c, val a/c: 0.40/2.38, 0.25/3.36
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+32_fine.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.54/1.78, 0.30/3.06
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+33_fine.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.61/1.44, 0.31/2.89
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+34_fine.csv Test Accuracy: 0.41
+Final train a/c, val a/c: 0.70/1.26, 0.41/1.93
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+35_fine.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.52/1.82, 0.32/2.89
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+36_fine.csv Test Accuracy: 0.30
+Final train a/c, val a/c: 0.51/1.88, 0.30/2.95
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+37_fine.csv Test Accuracy: 0.34
+Final train a/c, val a/c: 0.58/1.69, 0.34/2.89
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+38_fine.csv Test Accuracy: 0.34
+Final train a/c, val a/c: 0.62/1.53, 0.35/2.89
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+39_fine.csv Test Accuracy: 0.33
+Final train a/c, val a/c: 0.66/1.39, 0.32/2.97
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+40_fine.csv Test Accuracy: 0.33
+Final train a/c, val a/c: 0.74/1.09, 0.33/2.78
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+41_fine.csv Test Accuracy: 0.41
+Final train a/c, val a/c: 0.70/1.20, 0.40/1.87
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+42_fine.csv Test Accuracy: 0.28
+Final train a/c, val a/c: 0.48/2.19, 0.28/3.94
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+43_fine.csv Test Accuracy: 0.36
+Final train a/c, val a/c: 0.78/0.95, 0.36/2.98
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+44_fine.csv Test Accuracy: 0.29
+Final train a/c, val a/c: 0.57/1.79, 0.29/3.79
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+45_fine.csv Test Accuracy: 0.31
+Final train a/c, val a/c: 0.69/1.21, 0.31/3.37
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+46_fine.csv Test Accuracy: 0.33
+Final train a/c, val a/c: 0.75/0.94, 0.33/3.40
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+47_fine.csv Test Accuracy: 0.34
+Final train a/c, val a/c: 0.98/0.36, 0.34/2.98
+['linear:3072,50', 'batch_norm:50,50', 'relu:50,50', 'linear:50,10', 'softmax:10,10']
+48_fine.csv Test Accuracy: 0.41
+Final train a/c, val a/c: 0.69/1.13, 0.40/1.79
