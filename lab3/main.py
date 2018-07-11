@@ -289,7 +289,7 @@ def compareBatchNorm():
     gradient_check(0.0, [50, 30, 15], True)
     gradient_check(0.0, [50, 50, 30, 15], True)
 
-compareBatchNorm()
+#compareBatchNorm()
 
 
 def tryOne():
@@ -309,7 +309,7 @@ def tryOne():
                                 mom=0.8,
                                 epochs=100)
 
-tryOne()
+#tryOne()
 
 #
 #
@@ -327,7 +327,7 @@ def tryThreeLayers():
         l_rate=l, decay=0.995,
         mom=0.8, epochs=200)
 
-tryThreeLayers()
+#tryThreeLayers()
 
 #
 #
@@ -351,14 +351,14 @@ def search(reg_range, l_rate_range, dest_file, epochs=10):
 
 def doSearch():
     # coarse search
-    reg_range = [0.001, 0.005, 0.01, 0.05, 0.1, 0.25, 0.5]
-    l_rate_range = list(reversed(reg_range))
-    l_rate_range[:] = [x/10.0 for x in l_rate_range]
-    print(l_rate_range)
-    search(reg_range, l_rate_range, "coarse.csv", epochs=100)
+    #reg_range = [0.001, 0.005, 0.01, 0.05, 0.1, 0.25, 0.5]
+    #l_rate_range = list(reversed(reg_range))
+    #l_rate_range[:] = [x/10.0 for x in l_rate_range]
+    #print(l_rate_range)
+    #search(reg_range, l_rate_range, "coarse.csv", epochs=100)
     # fine search
     reg_range = np.linspace(0.005, 0.0005, num=7)
-    l_rate_range = np.linspace(0.1, 0.0001, num=7) # we lower this from feedback of ex2
+    l_rate_range = np.linspace(0.001, 0.00001, num=7) # we lower this from feedback of ex2
     search(reg_range, l_rate_range, "fine.csv", epochs=300)
 doSearch()
 
