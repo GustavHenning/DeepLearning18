@@ -319,15 +319,17 @@ def tryOne():
 # Note: We use the best performing network parameters from the last exercise.
 #
 
-def tryThreeLayers():
+def tryLayers(num_layers, batch_norm):
+    neurons = [50, 30] if num_layers is 2 else [50, 30, 15]
     l_rates = [0.095111, 0.095111/4, 0.095111/10]
     for l in l_rates:
-        tryParameters("3layerTest_lrate_{}".format(l), lin_neurons=[50, 30],
-        with_BN=False, lam=0.00050,
+        tryParameters("{}_layerTest_lrate_{}_BN_{}".format(num_layers, l, batch_norm), lin_neurons=neurons,
+        with_BN=batch_norm, lam=0.00050,
         l_rate=l, decay=0.995,
-        mom=0.8, epochs=200)
+        mom=0.8, epochs=10)
 
-#tryThreeLayers()
+tryLayers(2, False)
+tryLayers(2, True)
 
 #
 #
@@ -360,7 +362,7 @@ def doSearch():
     reg_range = np.linspace(0.005, 0.0005, num=7)
     l_rate_range = np.linspace(0.001, 0.00001, num=7) # we lower this from feedback of ex2
     search(reg_range, l_rate_range, "fine.csv", epochs=300)
-doSearch()
+#doSearch()
 
 
 #

@@ -84,12 +84,12 @@ def plotImages(dataset, name):
 
 # Time to make a network
 class Net():
-    def __init__(self, input_size, output_size, lam=0.1):
-        self.in_size = input_size
+    def __init__(self, in_size, output_size, lam=0.1):
+        self.in_size = in_size
         self.out_size = output_size
         # Guassian normal dist as sensible random initialization
         # Weights
-        self.W = np.random.normal(loc=0.0, scale=0.01, size=(output_size, input_size))
+        self.W = np.random.normal(loc=0.0, scale=0.01, size=(output_size, in_size))
         # Bias
         self.b = np.random.normal(loc=0.0, scale=0.01, size=(output_size, 1))
         # Lambda term
