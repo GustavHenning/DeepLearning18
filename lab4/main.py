@@ -18,7 +18,7 @@ def callback(opt, last_probs, last_state, data, start):
     first_char[np.random.choice(opt.rnn.in_size, p=last_probs)] = 1
     text, _ = generate_text(opt.rnn, data,
                             first_char=first_char,
-                            initial_state=last_state)
+                            init_state=last_state)
     print('Sequences {} cost {:.3f} learning rate {:.2e} elapsed {:.0f}s:\n{}\n'
           .format(opt.steps, opt.smooth_costs[-1], opt.learning_rates[-1],
                   time.time() - start, text))
@@ -56,12 +56,12 @@ def main(args):
 
     setup_plot()
 
-    sequence_pairs = list(data.get_sequences(25))
+    sequence_pairs = list(data.get_seqs(25))
     print('Training on {}:\n'
           '- {} total chars\n'
           '- {} unique chars\n'
           '- {} sequences of length 25'
-          .format(args.source, data.total_chars,
+          .format(args.source, data.tot_chars,
                   data.num_classes, len(sequence_pairs)))
     opt.train(sequence_pairs, epochs=40,
               callback=partial(callback, data=data, start=time.time()),
