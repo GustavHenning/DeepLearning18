@@ -4,7 +4,7 @@ import numpy as np
 
 class Initializer:
     def from_shape(self, shape):
-        print("Cannot initialize with Initializer baseclass")
+        print("Initializer is an interface.")
         sys.exit(1)
         pass
 

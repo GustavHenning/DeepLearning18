@@ -6,16 +6,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 from os.path import basename
 
-from datasets import TextData
-from initializers import Xavier, Zeros
+from data import TextData
+from inits import Xavier, Zeros
 from crnn import CharRNN
-from rnn_optimizers.adagrad import RnnAdaGrad
-from utils import generate_text, save_crnn, load_crnn
+from adagrad import Adagrad
+from util import generate_text, save_crnn, load_crnn
 
 
 def callback(opt, last_probs, last_state, data, start):
     first_char = np.zeros_like(last_probs)
-    first_char[np.random.choice(opt.rnn.input_size, p=last_probs)] = 1
+    first_char[np.random.choice(opt.rnn.in_size, p=last_probs)] = 1
     text, _ = generate_text(opt.rnn, data,
                             first_char=first_char,
                             initial_state=last_state)
@@ -37,7 +37,7 @@ def setup_plot():
     plt.grid(True, which='major', color='k', linestyle='-', alpha=0.3)
     plt.grid(True, which='minor', color='k', linestyle='-', alpha=0.1)
     plt.minorticks_on()
-    plt.title('Evolution of cost over the number of sequences seen')
+    plt.title('Evolution of cost / number of sequences')
     plt.xlabel('Sequences seen')
     plt.ylabel('Smoothed cost')
     plt.ion()
@@ -52,14 +52,14 @@ def main(args):
             in_out_size=data.num_classes,
             state_size=args.state
         )
-    opt = RnnAdaGrad(rnn, 0.1, stateful=True, clip=5)
+    opt = Adagrad(rnn, 0.1, stateful=True, clip=5)
 
     setup_plot()
 
     sequence_pairs = list(data.get_sequences(25))
     print('Training on {}:\n'
-          '- {} total characters\n'
-          '- {} unique characters\n'
+          '- {} total chars\n'
+          '- {} unique chars\n'
           '- {} sequences of length 25'
           .format(args.source, data.total_chars,
                   data.num_classes, len(sequence_pairs)))
@@ -75,11 +75,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('source',
                         type=str,
-                        help='the source for the text')
+                        help='the path of the source text')
     parser.add_argument('-c', '--checkpoint',
                         type=str,
                         metavar='CHECKPOINT',
-                        help='restore weights from CHECKPOINT')
+                        help='restore from predefined weights')
     parser.add_argument('-s', '--state',
                         type=int,
                         default=100,

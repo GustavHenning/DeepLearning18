@@ -8,29 +8,29 @@ InputTargetSequence = namedtuple('InputTargetSequence', 'input output')
 
 class TextData:
     def __init__(self, filename):
-        self.char_sequence = list(self.load_text(filename))
+        self.char_seq = list(self.load_text(filename))
         self.label_encoder = preprocessing.LabelBinarizer()
-        self.encoded_text = self.label_encoder.fit_transform(
-            self.char_sequence)
-        self.total_chars, self.num_classes = self.encoded_text.shape
+        self.enc_text = self.label_encoder.fit_transform(
+            self.char_seq)
+        self.tot_chars, self.num_classes = self.enc_text.shape
 
-    def encode(self, *values):
-        if len(values) == 1:
-            return np.squeeze(self.label_encoder.transform(list(values[0])))
+    def encode(self, *vals):
+        if len(vals) == 1:
+            return np.squeeze(self.label_encoder.transform(list(vals[0])))
         else:
-            return [self.encode(s) for s in values]
+            return [self.encode(s) for s in vals]
 
-    def decode_to_strings(self, *sequences):
-        if len(sequences) == 1:
-            return ''.join(self.label_encoder.inverse_transform(sequences[0]))
+    def decode_to_strings(self, *seqs):
+        if len(seqs) == 1:
+            return ''.join(self.label_encoder.inverse_transform(seqs[0]))
         else:
-            return [self.decode_to_strings(s) for s in sequences]
+            return [self.decode_to_strings(s) for s in seqs]
 
-    def get_sequences(self, length=25):
-        for i in range(0, self.total_chars - length, length):
+    def get_seqs(self, length=25):
+        for i in range(0, self.tot_chars - length, length):
             yield InputTargetSequence(
-                input=self.encoded_text[i:i + length],
-                output=self.encoded_text[i + 1:i + length + 1]
+                input=self.enc_text[i:i + length],
+                output=self.enc_text[i + 1:i + length + 1]
             )
 
     @staticmethod
